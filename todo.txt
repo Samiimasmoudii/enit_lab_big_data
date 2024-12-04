@@ -1,0 +1,8 @@
+docs = spark.read.text("/root/input.txt")
+lower = docs.rdd.map(lambda line: line.value.lower())
+words = lower.flatMap(lambda line: line.split(" "))
+counts = words.map(lambda word: (word, 1))
+freq = counts.reduceByKey(lambda x, y: x + y)
+freq_swapped = freq.map(lambda x: (x[1], x[0]))
+top = freq_swapped.takeOrdered(3, key=lambda x: -x[0])
+print(top)

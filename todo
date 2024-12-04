@@ -1,2 +1,0 @@
-docker cp input.txt spark-master:/root/input.txt
-docker exec -it spark-master bash
