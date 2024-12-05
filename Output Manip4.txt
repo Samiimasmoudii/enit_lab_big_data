@@ -1,0 +1,101 @@
+temp_db=# COPY order_detail FROM '/var/lib/postgresql/data/lmwn/order_detail.csv' DELIMITER ',' CSV HEADER;
+COPY 395361
+
+
+temp_db=# COPY restaurant_detail FROM '/var/lib/postgresql/data/lmwn/restaurant_detail.csv' DELIMITER ',' CSV HEADER;
+COPY 12623
+temp_db=#
+
+
+CREATE EXTERNAL TABLE IF NOT EXISTS order_detail_hive (
+    >     order_created_timestamp TIMESTAMP,
+    >     status STRING,
+    >     price INT,
+    >     discount FLOAT,
+    >     id STRING,
+    >     driver_id STRING,
+    >     user_id STRING,
+    >     restaurant_id STRING
+    > )
+    > STORED AS PARQUET
+    > LOCATION '/user/spark/order_detail_hive';
+OK
+Time taken: 1.84 seconds
+hive>
+
+
+Moving data to directory hdfs://namenode:9000/user/spark/restaurant_detail_hive/.hive-staging_hive_2024-12-05_09-06-50_835_4287603175472075957-1/-ext-10000
+Loading data to table default.restaurant_detail_hive
+MapReduce Jobs Launched:
+Stage-Stage-1:  HDFS Read: 63955534 HDFS Write: 54469631 SUCCESS
+Total MapReduce CPU Time Spent: 0 msec
+OK
+Time taken: 2.481 seconds
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------- Output RestauranProcessingTime.py ---------------------------------------------------
+
+bash-5.0# /spark/bin/spark-submit --master local --driver-memory 4g --executor-memory 2g --executor-cores 2 --py-files RestaurantProcessingTime.py RestaurantProcessingTime.py
+24/12/05 10:36:15 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+24/12/05 10:36:15 INFO SparkContext: Running Spark version 3.1.1
+24/12/05 10:36:15 INFO ResourceUtils: ==============================================================
+24/12/05 10:36:15 INFO ResourceUtils: No custom resources configured for spark.driver.
+24/12/05 10:36:15 INFO ResourceUtils: ==============================================================
+24/12/05 10:36:15 INFO SparkContext: Submitted application: Restaurant Processing Time
+24/12/05 10:36:15 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+24/12/05 10:36:15 INFO ResourceProfile: Limiting resource is cpu
+24/12/05 10:36:15 INFO ResourceProfileManager: Added ResourceProfile id: 0
+24/12/05 10:36:15 INFO SecurityManager: Changing view acls to: root
+24/12/05 10:36:15 INFO SecurityManager: Changing modify acls to: root
+24/12/05 10:36:15 INFO SecurityManager: Changing view acls groups to:
+24/12/05 10:36:16 INFO SecurityManager: Changing modify acls groups to:
+24/12/05 10:36:16 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+24/12/05 10:36:16 INFO Utils: Successfully started service 'sparkDriver' on port 37811.
+24/12/05 10:36:16 INFO SparkEnv: Registering MapOutputTracker
+24/12/05 10:36:16 INFO SparkEnv: Registering BlockManagerMaster
+24/12/05 10:36:16 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+24/12/05 10:36:16 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+24/12/05 10:36:16 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+24/12/05 10:36:16 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-31cbf62c-4550-4d4c-9ca0-f80771ee0c80
+24/12/05 10:36:16 INFO MemoryStore: MemoryStore started with capacity 2004.6 MiB
+24/12/05 10:36:16 INFO SparkEnv: Registering OutputCommitCoordinator
+24/12/05 10:36:16 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+24/12/05 10:36:16 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://151359928ab2:4040
+24/12/05 10:36:16 INFO SparkContext: Added file file:///RestaurantProcessingTime.py at file:///RestaurantProcessingTime.py with timestamp 1733394975869
+24/12/05 10:36:16 INFO Utils: Copying /RestaurantProcessingTime.py to /tmp/spark-48b63bb5-1585-463f-82c6-3f8ca4c7a149/userFiles-2b697db8-3e76-48c0-8df7-f1a4ce85dc84/RestaurantProcessingTime.py
+24/12/05 10:36:16 INFO Executor: Starting executor ID driver on host 151359928ab2
+24/12/05 10:36:16 INFO Executor: Fetching file:///RestaurantProcessingTime.py with timestamp 1733394975869
+24/12/05 10:36:16 INFO Utils: /RestaurantProcessingTime.py has been previously copied to /tmp/spark-48b63bb5-1585-463f-82c6-3f8ca4c7a149/userFiles-2b697db8-3e76-48c0-8df7-f1a4ce85dc84/RestaurantProcessingTime.py
+24/12/05 10:36:16 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 40521.
+24/12/05 10:36:16 INFO NettyBlockTransferService: Server created on 151359928ab2:40521
+24/12/05 10:36:16 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+24/12/05 10:36:19 INFO SparkContext: Successfully stopped SparkContext
+24/12/05 10:36:19 INFO ShutdownHookManager: Shutdown hook called
+24/12/05 10:36:19 INFO ShutdownHookManager: Deleting directory /tmp/localPyFiles-8d704028-638e-4e35-b764-832c59b35503
+24/12/05 10:36:19 INFO ShutdownHookManager: Deleting directory /tmp/spark-48b63bb5-1585-463f-82c6-3f8ca4c7a149
+24/12/05 10:36:19 INFO ShutdownHookManager: Deleting directory /tmp/spark-48b63bb5-1585-463f-82c6-3f8ca4c7a149/pyspark-dcc32a51-154b-488a-82a1-8ee2ad1b5702
+24/12/05 10:36:19 INFO ShutdownHookManager: Deleting directory /tmp/spark-339efdec-b67c-454f-8db2-a5680da8ce50
+bash-5.0# cd top_3_restaurants.csv && cat part-*
+bash: cd: top_3_restaurants.csv: No such file or directory
+bash-5.0# cd avg_processing_time_per_category.csv && cat part-*
+bash: cd: avg_processing_time_per_category.csv: No such file or directory
+bash-5.0# dir
+RestaurantProcessingTime.py  dev              finish-step.sh  lib64           media  output   root  spark                                 sys  var
+Wordcount-1.0.jar            etc              home            loremipsum.txt  mnt    output1  run   sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz  tmp  wait-for-step.sh
+bin                          execute-step.sh  lib             master.sh       opt    proc     sbin  srv                                   usr  wordcount.py
+
